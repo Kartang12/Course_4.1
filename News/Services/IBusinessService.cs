@@ -13,5 +13,7 @@ namespace News.Services
         Task<BusinessType> GetBusinessByNameAsync(string bName);
 
         Task<bool> DeleteBusinessAsync(string bName);
+
+        Task<BusinessType> GetBusinessOfUser(string userId);
     }
 }

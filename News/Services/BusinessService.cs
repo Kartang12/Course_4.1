@@ -51,5 +51,11 @@ namespace News.Services
             _dataContext.BusinessTags.RemoveRange(tags);
             return await _dataContext.SaveChangesAsync() > _dataContext.BusinessTags.Count();
         }
+
+        public async Task<BusinessType> GetBusinessOfUser(string userId)
+        {
+            var temp = await _dataContext.UserBusinesses.SingleOrDefaultAsync(x => x.userId == userId);
+            return await _dataContext.Businesses.SingleOrDefaultAsync(x => x.Id.ToString() == temp.sphereId);
+        }
     }
 }

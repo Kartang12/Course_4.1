@@ -6,7 +6,7 @@ namespace News.Services
 {
     public interface IIdentityService
     {
-        Task<AuthenticationResult> RegisterAsync(string email, string password, string role);
+        Task<AuthenticationResult> RegisterAsync(string email, string name, string password, string role, string business);
         
         Task<AuthenticationResult> LoginAsync(string email, string password);
         

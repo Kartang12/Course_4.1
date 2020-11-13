@@ -73,7 +73,7 @@ namespace News.Controllers.V1
         [HttpPost(ApiRoutes.Users.Add)]
         public async Task<IActionResult> Add([FromBody] UserRegistrationRequest request)
         {
-            var registered = await _identityService.RegisterAsync(request.Email, request.Password, request.BusinessType);
+            var registered = await _identityService.RegisterAsync(request.Email, request.Name, request.Password, request.Role, request.Business);
             
             if(registered.Errors == null)
                 return Ok();

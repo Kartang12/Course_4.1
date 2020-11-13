@@ -13,12 +13,12 @@ namespace News.Installers
         {
             services.AddDbContext<DataContext>(options =>
                 options.UseSqlServer(
-                    configuration.GetConnectionString("DefaultConnection")));
+                    configuration.GetConnectionString("Connection2")));
             services.AddDefaultIdentity<IdentityUser>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<DataContext>();
 
-            services.AddScoped<IBusinessService, BusinessService>();
+            //services.AddScoped<IBusinessService, BusinessService>();
         }
     }
 }

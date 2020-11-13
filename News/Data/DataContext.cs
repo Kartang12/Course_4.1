@@ -24,7 +24,7 @@ namespace News.Data
         {
             base.OnModelCreating(builder);
             builder.Entity<BusinessTag>().HasNoKey();
-            builder.Entity<UserBusiness>().HasNoKey();
+            //builder.Entity<UserBusiness>().HasNoKey();
             builder.Entity<Tag>().HasKey(x => new {x.TagId, x.TagName});
         }
     }

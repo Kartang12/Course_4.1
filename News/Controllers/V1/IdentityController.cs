@@ -29,7 +29,7 @@ namespace News.Controllers.V1
                 });
             }
             
-            var authResponse = await _identityService.RegisterAsync(request.Email, request.Password, request.BusinessType);
+            var authResponse = await _identityService.RegisterAsync(request.Email, request.Name, request.Password, request.Role, request.Business);
 
             if (!authResponse.Success)
             {
@@ -43,10 +43,12 @@ namespace News.Controllers.V1
             {
                 Token = authResponse.Token,
                 RefreshToken = authResponse.RefreshToken,
-                Role = authResponse.Role
+                Role = authResponse.Role,
+                BusinessType = authResponse.BusinessType
             });
         }
-        
+
+
         [HttpPost(ApiRoutes.Identity.Login)]
         public async Task<IActionResult> Login([FromBody] UserLoginRequest request)
         {
@@ -65,7 +67,8 @@ namespace News.Controllers.V1
                 Email = request.Email,
                 Token = authResponse.Token,
                 RefreshToken = authResponse.RefreshToken,
-                Role = authResponse.Role
+                Role = authResponse.Role,
+                BusinessType = authResponse.BusinessType
             });
         }
         

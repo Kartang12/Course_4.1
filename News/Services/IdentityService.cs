@@ -21,17 +21,19 @@ namespace News.Services
         private readonly JwtSettings _jwtSettings;
         private readonly TokenValidationParameters _tokenValidationParameters;
         private readonly DataContext _context;
+        private readonly IBusinessService _businessService;
         
-        public IdentityService(UserManager<IdentityUser> userManager, JwtSettings jwtSettings, TokenValidationParameters tokenValidationParameters, DataContext context, RoleManager<IdentityRole> roleManager)
+        public IdentityService(UserManager<IdentityUser> userManager, JwtSettings jwtSettings, TokenValidationParameters tokenValidationParameters, DataContext context, RoleManager<IdentityRole> roleManager, IBusinessService businessService)
         {
             _userManager = userManager;
             _jwtSettings = jwtSettings;
             _tokenValidationParameters = tokenValidationParameters;
             _context = context;
             _roleManager = roleManager;
+            _businessService = businessService;
         }
         
-        public async Task<AuthenticationResult> RegisterAsync(string email, string password, string role)
+        public async Task<AuthenticationResult> RegisterAsync(string email, string name, string password, string role, string business)
         {
             var existingUser = await _userManager.FindByEmailAsync(email);
 
@@ -48,7 +50,7 @@ namespace News.Services
             {
                 Id = newUserId.ToString(),
                 Email = email,
-                UserName = email,
+                UserName = name,
             };
             
             var createdUser = await _userManager.CreateAsync(newUser, password);
@@ -74,13 +76,20 @@ namespace News.Services
             //     {
             //         Errors = new []{"Такой роли не существует"} 
             //     };
-            
+            if (!string.IsNullOrEmpty(business))
+            {
+                BusinessType b = await _businessService.GetBusinessByNameAsync(business);
+                _context.UserBusinesses.Add(new UserBusiness { userId = newUserId.ToString(), sphereId = b.Id.ToString() });
+            }
+
+            await _context.SaveChangesAsync();
+
             return await GenerateAuthenticationResultForUserAsync(newUser);
         }
         
         public async Task<AuthenticationResult> LoginAsync(string email, string password)
         {
-            var user = await _userManager.FindByNameAsync(email);
+            var user = await _userManager.FindByEmailAsync(email);
 
             if (user == null)
             {
@@ -246,13 +255,14 @@ namespace News.Services
             await _context.RefreshTokens.AddAsync(refreshToken);
             await _context.SaveChangesAsync();
             var roles = await _userManager.GetRolesAsync(user);
-            
+
             return new AuthenticationResult
             {
                 Success = true,
                 Token = tokenHandler.WriteToken(token),
                 RefreshToken = refreshToken.Token,
-                Role = roles.Count > 0 ? roles.First() : null
+                Role = roles.Count > 0 ? roles.First() : null,
+                BusinessType = (await _businessService.GetBusinessOfUser(user.Email)).Name
             };
         }
         

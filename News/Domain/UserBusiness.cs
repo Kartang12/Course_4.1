@@ -1,10 +1,11 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace News.Domain
 {
     public class UserBusiness
     {
-        public Guid userId { get; set; }
-        public Guid sphereId { get; set; }
+        [Key]
+        public string userId { get; set; }
+        public string sphereId { get; set; }
     }
 }

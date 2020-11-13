@@ -12,6 +12,8 @@ namespace News.Domain
 
         public string Role { get; set; }
 
+        public string BusinessType { get; set; }
+
         public IEnumerable<string> Errors { get; set; }
     }
 }
