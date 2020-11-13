@@ -12,7 +12,7 @@ namespace News.Data
         
         public DbSet<BusinessType> Businesses{ get; set; }
         
-        public DbSet<UserBusiness> UserBusinesses { get; set; }
+        public DbSet<UserBusiness> UserBusiness { get; set; }
 
         public DbSet<Tag> Tags { get; set; }
 
@@ -24,8 +24,8 @@ namespace News.Data
         {
             base.OnModelCreating(builder);
             builder.Entity<BusinessTag>().HasNoKey();
-            //builder.Entity<UserBusiness>().HasNoKey();
             builder.Entity<Tag>().HasKey(x => new {x.TagId, x.TagName});
+            builder.Entity<UserBusiness>().HasNoKey();
         }
     }
 }

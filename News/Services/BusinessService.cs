@@ -54,8 +54,8 @@ namespace News.Services
 
         public async Task<BusinessType> GetBusinessOfUser(string userId)
         {
-            var temp = await _dataContext.UserBusinesses.SingleOrDefaultAsync(x => x.userId == userId);
-            return await _dataContext.Businesses.SingleOrDefaultAsync(x => x.Id.ToString() == temp.sphereId);
+            var temp = await _dataContext.UserBusiness.SingleOrDefaultAsync(x => x.userId == userId);
+            return temp != null ? await _dataContext.Businesses.SingleOrDefaultAsync(x => x.Id.ToString() == temp.sphereId) : null;
         }
     }
 }

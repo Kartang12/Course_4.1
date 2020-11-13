@@ -45,7 +45,8 @@ namespace News
                     var newUser = new IdentityUser
                     {
                         Id = newUserId.ToString(),
-                        UserName = "admin@example.com"
+                        Email = "admin@example.com",
+                        UserName = "admin"
                     };
                     await userManager.CreateAsync(newUser, "String1234.");
                     await userManager.AddToRoleAsync(newUser, "Admin");

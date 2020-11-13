@@ -18,7 +18,7 @@ namespace News.Installers
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<DataContext>();
 
-            //services.AddScoped<IBusinessService, BusinessService>();
+            services.AddScoped<IBusinessService, BusinessService>();
         }
     }
 }

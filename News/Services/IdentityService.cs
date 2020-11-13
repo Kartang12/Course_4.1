@@ -79,7 +79,7 @@ namespace News.Services
             if (!string.IsNullOrEmpty(business))
             {
                 BusinessType b = await _businessService.GetBusinessByNameAsync(business);
-                _context.UserBusinesses.Add(new UserBusiness { userId = newUserId.ToString(), sphereId = b.Id.ToString() });
+                _context.UserBusiness.Add(new UserBusiness { userId = newUserId.ToString(), sphereId = b.Id.ToString() });
             }
 
             await _context.SaveChangesAsync();
@@ -255,6 +255,13 @@ namespace News.Services
             await _context.RefreshTokens.AddAsync(refreshToken);
             await _context.SaveChangesAsync();
             var roles = await _userManager.GetRolesAsync(user);
+            string business = null;
+            try
+            {
+                var userBusiness = await _businessService.GetBusinessOfUser(user.Id);
+                business = userBusiness.Name;
+            }
+            catch(Exception ex) { Console.WriteLine("User doesn't have business"); }
 
             return new AuthenticationResult
             {
@@ -262,7 +269,7 @@ namespace News.Services
                 Token = tokenHandler.WriteToken(token),
                 RefreshToken = refreshToken.Token,
                 Role = roles.Count > 0 ? roles.First() : null,
-                BusinessType = (await _businessService.GetBusinessOfUser(user.Email)).Name
+                BusinessType = business
             };
         }
         

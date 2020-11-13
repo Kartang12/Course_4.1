@@ -294,7 +294,7 @@ namespace News.Migrations
                     b.Property<string>("userId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("UserBusinesses");
+                    b.ToTable("UserBusiness");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

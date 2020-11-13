@@ -10,8 +10,8 @@ using News.Data;
 namespace News.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20201111122535_Init")]
-    partial class Init
+    [Migration("20201113110852_test_init")]
+    partial class test_init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -290,13 +290,13 @@ namespace News.Migrations
 
             modelBuilder.Entity("News.Domain.UserBusiness", b =>
                 {
-                    b.Property<Guid>("sphereId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("sphereId")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("userId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("userId")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("UserBusinesses");
+                    b.ToTable("UserBusiness");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
