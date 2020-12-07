@@ -1,31 +1,25 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using News.Domain;
 
 namespace News.Data
 {
-    public class DataContext : IdentityDbContext
+    public class DataContext : IdentityDbContext<SMMUser, IdentityRole, string>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
         
         public DbSet<BusinessType> Businesses{ get; set; }
-        
-        public DbSet<UserBusiness> UserBusiness { get; set; }
 
         public DbSet<Tag> Tags { get; set; }
-
-        public DbSet<BusinessTag> BusinessTags { get; set; }
-
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<BusinessTag>().HasNoKey();
-            builder.Entity<Tag>().HasKey(x => new {x.TagId, x.TagName});
-            builder.Entity<UserBusiness>().HasNoKey();
+            //builder.Entity<Tag>().HasKey(x => new {x.TagId, x.TagName});
+            //builder.Entity<UserBusiness>().HasNoKey();
         }
     }
 }

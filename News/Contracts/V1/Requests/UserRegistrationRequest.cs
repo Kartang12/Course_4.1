@@ -1,3 +1,5 @@
+using News.Domain;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace News.Contracts.V1.Requests
@@ -13,6 +15,6 @@ namespace News.Contracts.V1.Requests
 
         public string Role { get; set; }
 
-        public string Business { get; set; }
+        public List<BusinessType> Business { get; set; }
     }
 }

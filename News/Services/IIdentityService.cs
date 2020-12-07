@@ -1,18 +1,18 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using News.Contracts.V1.Responses;
 using News.Domain;
 
 namespace News.Services
 {
     public interface IIdentityService
     {
-        Task<AuthenticationResult> RegisterAsync(string email, string name, string password, string role, string business);
+        Task<AuthSuccessResponse> RegisterAsync(string email, string name, string password, string role, List<BusinessType> businesses);
         
-        Task<AuthenticationResult> LoginAsync(string email, string password);
+        Task<AuthSuccessResponse> LoginAsync(string email, string password);
         
-        Task<AuthenticationResult> RefreshTokenAsync(string token, string refreshToken);
-        
-        Task<IdentityUser> GetUserByName(string userName);
+        Task<SMMUser> GetUserByName(string userName);
 
         Task<IdentityResult> DeleteUser(string name);
     }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using News.Contracts.V1.Requests;
 using News.Data;
 using News.Domain;
 using System;
@@ -22,15 +23,23 @@ namespace News.Services
             return await _dataContext.Businesses.AsNoTracking().ToListAsync();
         }
 
-        public async Task<bool> CreateBusinessAsync(string bName)
+        public async Task<bool> CreateBusinessAsync(string bName, List<Tag> tags)
         {
             var existingB = await _dataContext.Businesses.AsNoTracking().SingleOrDefaultAsync(x => x.Name == bName);
             if (existingB != null)
-                return true;
+                return false;
 
-            await _dataContext.Businesses.AddAsync(new BusinessType{ Name = bName.ToLower()});
+            var a = _dataContext.Businesses.Add(new BusinessType { Name = bName.ToLower() });
+            await _dataContext.SaveChangesAsync();
+            
+            a.Entity.tags = tags;
             var created = await _dataContext.SaveChangesAsync();
             return created > 0;
+        }
+
+        public async Task<BusinessType> GetBusinessByIdAsync(string bId)
+        {
+            return await _dataContext.Businesses.AsNoTracking().SingleOrDefaultAsync(x => x.Id.ToString() == bId);
         }
 
         public async Task<BusinessType> GetBusinessByNameAsync(string bName)
@@ -38,24 +47,35 @@ namespace News.Services
             return await _dataContext.Businesses.AsNoTracking().SingleOrDefaultAsync(x => x.Name == bName.ToLower());
         }
 
-        public async Task<bool> DeleteBusinessAsync(string bName)
+        public async Task<bool> DeleteBusinessAsync(string bId)
         {
-            var business = await _dataContext.Businesses.AsNoTracking().SingleOrDefaultAsync(x => x.Name == bName.ToLower());
+            var business = await _dataContext.Businesses.AsNoTracking().SingleOrDefaultAsync(x => x.Id.ToString() == bId);
 
             if (business == null)
                 return false;
 
-            var tags = await _dataContext.BusinessTags.Where(x => x.businessId == business.Id).ToListAsync();
-
             _dataContext.Businesses.Remove(business);
-            _dataContext.BusinessTags.RemoveRange(tags);
-            return await _dataContext.SaveChangesAsync() > _dataContext.BusinessTags.Count();
+            return await _dataContext.SaveChangesAsync() > 0;
         }
 
-        public async Task<BusinessType> GetBusinessOfUser(string userId)
+        public async Task<bool> UpdateBusinessAsync(string bId, CreateBusinessRequest request)
         {
-            var temp = await _dataContext.UserBusiness.SingleOrDefaultAsync(x => x.userId == userId);
-            return temp != null ? await _dataContext.Businesses.SingleOrDefaultAsync(x => x.Id.ToString() == temp.sphereId) : null;
+            var business = await _dataContext.Businesses.AsNoTracking().SingleOrDefaultAsync(x => x.Id.ToString() == bId);
+
+            if (business == null)
+                return false;
+            if(!string.IsNullOrEmpty(request.Name))
+                business.Name = request.Name;
+            if(request.Tags.Count > 0)
+                business.tags = request.Tags;
+            
+            return await _dataContext.SaveChangesAsync() > 0;
+        }
+
+        public async Task<List<BusinessType>> GetBusinessOfUser(string userId)
+        {
+            var user = await _dataContext.Users.Include(x=> x.businessTypes).SingleOrDefaultAsync(x => x.Id == userId);
+            return await Task.FromResult(user.businessTypes);
         }
     }
 }

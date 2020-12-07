@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using News.Data;
+using News.Domain;
 using News.Services;
 
 namespace News.Installers
@@ -14,11 +15,14 @@ namespace News.Installers
             services.AddDbContext<DataContext>(options =>
                 options.UseSqlServer(
                     configuration.GetConnectionString("Connection2")));
-            services.AddDefaultIdentity<IdentityUser>()
+
+            services.AddDefaultIdentity<SMMUser>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<DataContext>();
 
             services.AddScoped<IBusinessService, BusinessService>();
+            services.AddScoped<IIdentityService, IdentityService>();
+            services.AddScoped<ITagService, TagService>();
         }
     }
 }

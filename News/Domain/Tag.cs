@@ -1,15 +1,14 @@
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace News.Domain
 {
     public class Tag
     {
-        [Key]
-        public Guid TagId { get; set; }
+        public Guid Id { get; set; }
 
-        [ForeignKey(nameof(TagName))]
-        public string TagName { get; set; }
+        public string Name { get; set; }
+
+        public List<BusinessType> businessTypes { get; set; }
     }
 }

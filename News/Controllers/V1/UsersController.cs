@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using News.Contracts.V1;
 using News.Contracts.V1.Requests;
 using News.Contracts.V1.Responses;
+using News.Domain;
 using News.Services;
 
 namespace News.Controllers.V1
@@ -15,14 +16,12 @@ namespace News.Controllers.V1
     public class UsersController : Controller
     {
         private readonly IIdentityService _identityService;
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<SMMUser> _userManager;
 
-        public UsersController(UserManager<IdentityUser> userManager, IIdentityService identityService, RoleManager<IdentityRole> roleManager)
+        public UsersController(UserManager<SMMUser> userManager, IdentityService identityService)
         {
             _userManager = userManager;
             _identityService = identityService;
-            _roleManager = roleManager;
         }
             
         [HttpGet(ApiRoutes.Users.GetAll)]
@@ -30,20 +29,17 @@ namespace News.Controllers.V1
         {
             var rawUsers = _userManager.Users;
             List<UserDataResponse> response = new List<UserDataResponse>();
-            foreach (IdentityUser user in rawUsers)
+            foreach (SMMUser user in rawUsers)
             {
                 string role = null;
-                try
-                {
-                    role = (await _userManager.GetRolesAsync(user)).First();
-                }
-                catch (Exception ex)
-                {
-                }
+                
+                role = (await _userManager.GetRolesAsync(user)).First();
+
                 response.Add(new UserDataResponse()
                 {
+                    Id = user.Id,
                     Name = user.UserName,
-                    BusinessType = role
+                    Role = role
                 });
             }
             return Ok(response);
@@ -54,18 +50,14 @@ namespace News.Controllers.V1
         {
             var user = await _identityService.GetUserByName(userName);
             string role = null;
-            try
-            {
-                role = (await _userManager.GetRolesAsync(user)).First();
-            }
-            catch (Exception ex)
-            {
-            }
+
+            role = (await _userManager.GetRolesAsync(user)).First();
 
             return Ok(new UserDataResponse()
             {
+                Id = user.Id,
                 Name = user.UserName,
-                BusinessType = role
+                Role = role
             });
             // return Ok(await _identityService.GetUserByName(userName));
         }

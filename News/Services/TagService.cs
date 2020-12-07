@@ -17,39 +17,37 @@ namespace News.Services
             _dataContext = dataContext;
         }
 
-        public async Task<List<BusinessTag>> GetAllTagsAsync()
+        public async Task<List<Tag>> GetAllTagsAsync()
         {
-            return await _dataContext.BusinessTags.AsNoTracking().ToListAsync();
+            var a = await _dataContext.Tags.AsNoTracking().ToListAsync();
+            return a;
         }
 
         public async Task<bool> CreateTagAsync(string tagName)
         {
-            var existingTag = await _dataContext.Tags.AsNoTracking().SingleOrDefaultAsync(x => x.TagName == tagName);
-            if (existingTag != null)
-                return true;
+            if (tagName == null)
+                return false;
 
-            await _dataContext.Tags.AddAsync(new Tag { TagName = tagName});
+            var existingTag = await _dataContext.Tags.AsNoTracking().SingleOrDefaultAsync(x => x.Name == tagName);
+            if (existingTag != null)
+                return false;
+
+            await _dataContext.Tags.AddAsync(new Tag { Name = tagName});
             var created = await _dataContext.SaveChangesAsync();
             return created > 0;
         }
 
         public async Task<Tag> GetTagByNameAsync(string tagName)
         {
-            return await _dataContext.Tags.AsNoTracking().SingleOrDefaultAsync(x => x.TagName == tagName.ToLower());
+            return await _dataContext.Tags.AsNoTracking().SingleOrDefaultAsync(x => x.Name == tagName.ToLower());
         }
 
-        public async Task<bool> DeleteTagAsync(string tagName)
+        public async Task<bool> DeleteTagAsync(string id)
         {
-            var tag = await _dataContext.Tags.AsNoTracking().SingleOrDefaultAsync(x => x.TagName == tagName.ToLower());
+            var tag = await _dataContext.Tags.AsNoTracking().SingleOrDefaultAsync(x => x.Id.ToString() == id);
 
-            if (tag == null)
-                return false;
-
-            var businessTags = await _dataContext.BusinessTags.Where(x => x.tagId == tag.TagId).ToListAsync();
-
-            _dataContext.BusinessTags.RemoveRange(businessTags);
             _dataContext.Tags.Remove(tag);
-            return await _dataContext.SaveChangesAsync() > businessTags.Count;
+            return await _dataContext.SaveChangesAsync() > 0;
         }
     }
 }

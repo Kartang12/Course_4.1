@@ -8,12 +8,12 @@ namespace News.Services
 {
     public interface ITagService
     {
-        Task<List<BusinessTag>> GetAllTagsAsync();
+        Task<List<Tag>> GetAllTagsAsync();
 
         Task<bool> CreateTagAsync(string tagName);
 
         Task<Tag> GetTagByNameAsync(string tagName);
 
-        Task<bool> DeleteTagAsync(string tagName);
+        Task<bool> DeleteTagAsync(string id);
     }
 }

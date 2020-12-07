@@ -44,7 +44,7 @@ namespace News.Controllers.V1
         [HttpPost(ApiRoutes.Tags.Create)]
         public async Task<IActionResult> Create([FromBody] CreateTagRequest request)
         {
-            var created = await _tagService.CreateTagAsync(request.TagName);
+            var created = await _tagService.CreateTagAsync(request.name);
             if (!created)
             {
                 return BadRequest(new {error = "Unable to create tag"});
@@ -57,9 +57,9 @@ namespace News.Controllers.V1
         }
         
         [HttpDelete(ApiRoutes.Tags.Delete)]
-        public async Task<IActionResult> Delete([FromRoute] string tagName)
+        public async Task<IActionResult> Delete([FromRoute] string id)
         {
-            var deleted = await _tagService.DeleteTagAsync(tagName);
+            var deleted = await _tagService.DeleteTagAsync(id);
 
             if (deleted)
                 return NoContent();
