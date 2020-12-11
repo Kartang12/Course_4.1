@@ -12,14 +12,13 @@ namespace News.Data
         }
         
         public DbSet<BusinessType> Businesses{ get; set; }
-
         public DbSet<Tag> Tags { get; set; }
+        //public DbSet<Friendship> Friends { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            //builder.Entity<Tag>().HasKey(x => new {x.TagId, x.TagName});
-            //builder.Entity<UserBusiness>().HasNoKey();
+            //builder.Entity<Friendship>().HasNoKey();
         }
     }
 }

@@ -9,13 +9,25 @@
         public static class Users
         {
             public const string GetAll = Base + "/users";
-            public const string Get = Base + "/user/{userName}";
+            public const string Get = Base + "/user/{id}";
             public const string Add = Base + "/users";
             public const string Delete = Base + "/user/{userName}";
-            public const string Update = Base + "/user/{userName}";
+            public const string Update = Base + "/user";
             public const string Change = Base + "/userData/{userName}";
         }
         
+        
+        public static class Friends
+        {
+            public const string GetPeople =  Base + "/friends";
+            public const string GetAll = Base + "/friends/{id}";
+            public const string Search = Base + "/friendsByBusiness/{business}";
+            public const string Add = Base + "/friend";
+            public const string Delete = Base + "/friend";
+        }
+        
+
+
         public static class Businesses
         {
             public const string GetAll = Base + "/business";

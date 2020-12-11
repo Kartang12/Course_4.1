@@ -49,7 +49,7 @@ namespace News.Services
 
         public async Task<bool> DeleteBusinessAsync(string bId)
         {
-            var business = await _dataContext.Businesses.AsNoTracking().SingleOrDefaultAsync(x => x.Id.ToString() == bId);
+            var business = await _dataContext.Businesses.SingleOrDefaultAsync(x => x.Id.ToString() == bId);
 
             if (business == null)
                 return false;
@@ -60,7 +60,7 @@ namespace News.Services
 
         public async Task<bool> UpdateBusinessAsync(string bId, CreateBusinessRequest request)
         {
-            var business = await _dataContext.Businesses.AsNoTracking().SingleOrDefaultAsync(x => x.Id.ToString() == bId);
+            var business = await _dataContext.Businesses.SingleOrDefaultAsync(x => x.Id.ToString() == bId);
 
             if (business == null)
                 return false;

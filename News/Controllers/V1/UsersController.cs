@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using News.Contracts.V1;
 using News.Contracts.V1.Requests;
 using News.Contracts.V1.Responses;
+using News.Data;
 using News.Domain;
 using News.Services;
 
@@ -17,11 +18,13 @@ namespace News.Controllers.V1
     {
         private readonly IIdentityService _identityService;
         private readonly UserManager<SMMUser> _userManager;
+        private readonly DataContext _context;
 
-        public UsersController(UserManager<SMMUser> userManager, IdentityService identityService)
+        public UsersController(UserManager<SMMUser> userManager, IIdentityService identityService, DataContext context)
         {
             _userManager = userManager;
             _identityService = identityService;
+            _context = context;
         }
             
         [HttpGet(ApiRoutes.Users.GetAll)]
@@ -31,9 +34,7 @@ namespace News.Controllers.V1
             List<UserDataResponse> response = new List<UserDataResponse>();
             foreach (SMMUser user in rawUsers)
             {
-                string role = null;
-                
-                role = (await _userManager.GetRolesAsync(user)).First();
+                string role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
 
                 response.Add(new UserDataResponse()
                 {
@@ -46,9 +47,9 @@ namespace News.Controllers.V1
         }
         
         [HttpGet(ApiRoutes.Users.Get)]
-        public async Task<IActionResult> Get([FromRoute] string userName)
+        public async Task<IActionResult> Get([FromRoute] string id)
         {
-            var user = await _identityService.GetUserByName(userName);
+            var user = await _identityService.GetUserById(id);
             string role = null;
 
             role = (await _userManager.GetRolesAsync(user)).First();
@@ -57,7 +58,8 @@ namespace News.Controllers.V1
             {
                 Id = user.Id,
                 Name = user.UserName,
-                Role = role
+                Role = role,
+                Email = user.Email
             });
             // return Ok(await _identityService.GetUserByName(userName));
         }
@@ -88,21 +90,16 @@ namespace News.Controllers.V1
         }
 
         [HttpPut(ApiRoutes.Users.Update)]
-        public async Task<IActionResult> Update([FromRoute] string userName, [FromBody] UserUpdateRequest request)
+        public async Task<IActionResult> Update([FromBody] UserUpdateRequest request)
         {
-            IdentityUser nameIsTaken = null;
-            if(userName != request.Name)
-                nameIsTaken = await _identityService.GetUserByName(request.Name);
+            SMMUser user = await _context.Users.FirstOrDefaultAsync(x=> x.Id == request.Id);
             
-            if(nameIsTaken != null)
-                return BadRequest(new {error = "This username is taken"});
-            
-            var user = await _identityService.GetUserByName(userName);
-            
-            user.UserName = request.Name;
-            user.Email = request.Name;
+            if(!String.IsNullOrEmpty(request.Name))
+                user.UserName = request.Name;
+            if(!String.IsNullOrEmpty(request.Email))
+                user.Email = request.Email;
 
-            if(request.Role.Length > 0 )
+            if(!String.IsNullOrEmpty(request.Role))
             {
                 try
                 {
@@ -113,7 +110,7 @@ namespace News.Controllers.V1
                 await _userManager.AddToRoleAsync(user, request.Role);
             }
 
-            return Ok();
+            return Ok(_context.SaveChanges() > 0);
         }
 
         [HttpPut(ApiRoutes.Users.Change)]
@@ -129,6 +126,5 @@ namespace News.Controllers.V1
 
             return Ok();
         }
-
     }
 }

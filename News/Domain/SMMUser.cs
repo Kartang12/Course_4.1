@@ -9,6 +9,7 @@ namespace News.Domain
     public class SMMUser: IdentityUser
     {
         public List<BusinessType> businessTypes{ get; set; }
-        public List<SMMUser> friends{ get; set; }
+        
+        public virtual List<SMMUser> friends{ get; set; }
     }
 }

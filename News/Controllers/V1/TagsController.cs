@@ -66,5 +66,5 @@ namespace News.Controllers.V1
             
             return NotFound();
         }
-    }
+    }   
 }

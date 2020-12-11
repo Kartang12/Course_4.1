@@ -136,6 +136,10 @@ namespace News.Services
         {
             return await _userManager.FindByNameAsync(name);
         }
+        public async Task<SMMUser> GetUserById(string id)
+        {
+            return await _userManager.FindByIdAsync(id);
+        }
         
         public async Task<IdentityResult> DeleteUser(string name)
         {

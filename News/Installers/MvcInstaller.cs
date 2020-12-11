@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using News.Options;
 using News.Services;
+using Newtonsoft.Json;
 
 namespace News.Installers
 {
@@ -77,11 +78,11 @@ namespace News.Installers
                     }}, new List<string>()} 
                 });
             });
-            
-            services.AddCors(c =>  
-            {  
-                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin());  
-            });  
+
+            services.AddControllersWithViews()
+    .AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
         }
     }
 }

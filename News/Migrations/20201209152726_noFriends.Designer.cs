@@ -10,8 +10,8 @@ using News.Data;
 namespace News.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20201205100213_v1")]
-    partial class v1
+    [Migration("20201209152726_noFriends")]
+    partial class noFriends
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -242,9 +242,6 @@ namespace News.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("SMMUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -264,8 +261,6 @@ namespace News.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("SMMUserId");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -363,18 +358,6 @@ namespace News.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("News.Domain.SMMUser", b =>
-                {
-                    b.HasOne("News.Domain.SMMUser", null)
-                        .WithMany("friends")
-                        .HasForeignKey("SMMUserId");
-                });
-
-            modelBuilder.Entity("News.Domain.SMMUser", b =>
-                {
-                    b.Navigation("friends");
                 });
 #pragma warning restore 612, 618
         }

@@ -9,11 +9,9 @@ namespace News.Services
     public interface IIdentityService
     {
         Task<AuthSuccessResponse> RegisterAsync(string email, string name, string password, string role, List<BusinessType> businesses);
-        
         Task<AuthSuccessResponse> LoginAsync(string email, string password);
-        
         Task<SMMUser> GetUserByName(string userName);
-
+        Task<SMMUser> GetUserById(string id);
         Task<IdentityResult> DeleteUser(string name);
     }
 }
