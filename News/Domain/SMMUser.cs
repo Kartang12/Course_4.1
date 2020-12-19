@@ -11,5 +11,6 @@ namespace News.Domain
         public List<BusinessType> businessTypes{ get; set; }
         
         public virtual List<SMMUser> friends{ get; set; }
+        //public virtual List<Message> messages{ get; set; }
     }
 }
